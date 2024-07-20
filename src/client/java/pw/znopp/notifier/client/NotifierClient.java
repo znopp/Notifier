@@ -36,15 +36,21 @@ public class NotifierClient implements ClientModInitializer {
             String messageString = message.getString().toLowerCase();
 
             // Regex filter for messages sent by any user
+            // Examples:
+            // [optional rank] (optional asterisk)any_username: message
+            // [optional rank] (optional asterisk)<any_username> message
             List<Pattern> USERNAME_PATTERNS = Arrays.asList(
-                    Pattern.compile("^(:?\\[.+] )?[a-zA-Z0-9_]{3,16}: .+"), // [optional rank] any_username: message
-                    Pattern.compile("^(:?\\[.+] )?<[a-zA-Z0-9_]{3,16}> .+") // [optional rank] <any_username> message
+                    Pattern.compile("^(:?\\[.+])? (:?\\*)?[a-zA-Z0-9_]{3,16}: .+"),
+                    Pattern.compile("^(:?\\[.+] )?<[a-zA-Z0-9_]{3,16}> .+")
             );
 
             // Regex filter for messages sent by you
+            // Examples:
+            // [optional rank] (optional asterisk)your_username: message
+            // [optional rank] (optional asterisk)<your_username> message
             List<Pattern> SELF_PATTERNS = Arrays.asList(
-                    Pattern.compile("^(:?\\[.+] )?" + playerName + ": .+"), // [optional rank] your_username: message
-                    Pattern.compile("^(:?\\[.+] )?<" + playerName + "> .+") // [optional rank] <your_username> message
+                    Pattern.compile("^(:?\\[.+])? (:?\\*)?" + playerName + ": .+"),
+                    Pattern.compile("^(:?\\[.+])? (:?\\*)?<" + playerName + "> .+")
             );
 
             boolean fromPlayer = false;
