@@ -40,8 +40,8 @@ public class NotifierClient implements ClientModInitializer {
             // [optional rank] (optional asterisk)any_username: message
             // [optional rank] (optional asterisk)<any_username> message
             List<Pattern> USERNAME_PATTERNS = Arrays.asList(
-                    Pattern.compile("^(:?\\[.+])? (:?\\*)?[a-zA-Z0-9_]{3,16}: .+"),
-                    Pattern.compile("^(:?\\[.+] )?<[a-zA-Z0-9_]{3,16}> .+")
+                    Pattern.compile("^(:?\\[.+] )?(:?\\*)?[a-zA-Z0-9_]{3,16}: .+"),
+                    Pattern.compile("^(:?\\[.+] )?(:?\\*)?<[a-zA-Z0-9_]{3,16}> .+")
             );
 
             // Regex filter for messages sent by you
@@ -49,8 +49,8 @@ public class NotifierClient implements ClientModInitializer {
             // [optional rank] (optional asterisk)your_username: message
             // [optional rank] (optional asterisk)<your_username> message
             List<Pattern> SELF_PATTERNS = Arrays.asList(
-                    Pattern.compile("^(:?\\[.+])? (:?\\*)?" + playerName + ": .+"),
-                    Pattern.compile("^(:?\\[.+])? (:?\\*)?<" + playerName + "> .+")
+                    Pattern.compile("^(:?\\[.+] )?(:?\\*)?" + playerName + ": .+"),
+                    Pattern.compile("^(:?\\[.+] )?(:?\\*)?<" + playerName + "> .+")
             );
 
             boolean fromPlayer = false;
