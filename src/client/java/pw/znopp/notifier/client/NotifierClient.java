@@ -16,7 +16,8 @@ public class NotifierClient implements ClientModInitializer {
             "skill point!",
             "you found a pet egg!",
             "success! sale breakdown:",
-            "You received"
+            "You received",
+            "You bought"
     };
 
     String[] playerMessages = new String[] {

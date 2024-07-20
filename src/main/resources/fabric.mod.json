@@ -3,8 +3,10 @@
   "id": "notifier",
   "version": "${version}",
   "name": "Notifier",
-  "description": "",
-  "authors": ["znopp"],
+  "description": "Plays a sound in chat depending on certain criteria. Primarily made for rainyday.gg",
+  "authors": [
+    "znopp"
+  ],
   "contact": {},
   "license": "GPL-3.0",
   "icon": "assets/notifier/ping.png",
@@ -12,18 +14,8 @@
   "entrypoints": {
     "client": [
       "pw.znopp.notifier.client.NotifierClient"
-    ],
-    "main": [
-      "pw.znopp.notifier.Notifier"
     ]
   },
-  "mixins": [
-    "notifier.mixins.json",
-    {
-      "config": "notifier.client.mixins.json",
-      "environment": "client"
-    }
-  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
