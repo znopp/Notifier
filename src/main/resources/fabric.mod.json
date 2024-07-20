@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Notifier",
   "description": "",
-  "authors": [],
+  "authors": ["znopp"],
   "contact": {},
   "license": "GPL-3.0",
   "icon": "assets/notifier/ping.png",
