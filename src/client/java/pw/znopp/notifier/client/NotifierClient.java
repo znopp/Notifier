@@ -37,14 +37,14 @@ public class NotifierClient implements ClientModInitializer {
 
             // Regex filter for messages sent by any user
             List<Pattern> USERNAME_PATTERNS = Arrays.asList(
-                    Pattern.compile("^[a-zA-Z0-9_]{3,16}: .+"), // any_username: message
-                    Pattern.compile("^<[a-zA-Z0-9_]{3,16}> .+") // <any_username> message
+                    Pattern.compile("^(:?\\[.+] )?[a-zA-Z0-9_]{3,16}: .+"), // [optional rank] any_username: message
+                    Pattern.compile("^(:?\\[.+] )?<[a-zA-Z0-9_]{3,16}> .+") // [optional rank] <any_username> message
             );
 
             // Regex filter for messages sent by you
             List<Pattern> SELF_PATTERNS = Arrays.asList(
-                    Pattern.compile("^" + playerName + ": .+"), // your_username: message
-                    Pattern.compile("^<" + playerName + "> .+") // <your_username> message
+                    Pattern.compile("^(:?\\[.+] )?" + playerName + ": .+"), // [optional rank] your_username: message
+                    Pattern.compile("^(:?\\[.+] )?<" + playerName + "> .+") // [optional rank] <your_username> message
             );
 
             boolean fromPlayer = false;
