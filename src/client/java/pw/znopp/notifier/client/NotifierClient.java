@@ -16,9 +16,14 @@ public class NotifierClient implements ClientModInitializer {
             "skill point!",
             "you found a pet egg!",
             "success! sale breakdown:",
-            "You received",
-            "You bought",
-            "Thank you for voting!"
+            "you received",
+            "you bought",
+            "thank you for voting",
+            "activated"
+    };
+
+    String[] negativeServerMessages = new String[] {
+            "you cannot activate a"
     };
 
     String[] playerMessages = new String[] {
@@ -30,8 +35,11 @@ public class NotifierClient implements ClientModInitializer {
         // Exclusively for server messages, but can contain messages sent by players depending on server plugins/mods
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 
+            boolean hasPinged = false;
+
             // Player and their username
             ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            if (clientPlayer == null) return;
             String playerName = clientPlayer.getGameProfile().getName().toLowerCase();
 
             String messageString = message.getString().toLowerCase();
@@ -60,7 +68,7 @@ public class NotifierClient implements ClientModInitializer {
 
 
 
-            // if message matches regex, the message is probably from a user
+            // if message matches regex, the message is probably from a user (any user, including the mod user)
             for (Pattern pattern : USERNAME_PATTERNS) {
                 if (pattern.matcher(messageString).matches()) {
                     fromPlayer = true;
@@ -74,25 +82,47 @@ public class NotifierClient implements ClientModInitializer {
                 }
             }
 
-            // if a message contains one of the serverMessages keywords
-            for (String keyword : serverMessages) {
+            // if a message starts with one of the negativeServerMessages keywords
+            for (String keyword : negativeServerMessages) {
                 if (fromPlayer) break;
 
-                if (messageString.contains(keyword.toLowerCase())) {
-                    Ping.pingPlayer(clientPlayer, true);
+                if (messageString.startsWith(keyword.toLowerCase())) {
+                    Ping.pingPlayer(clientPlayer, "negative");
+                    hasPinged = true;
+                    break;
                 }
             }
 
+            // if a message starts with one of the serverMessages keywords
+            for (String keyword : serverMessages) {
+                if (fromPlayer || hasPinged) break;
+
+                if (messageString.startsWith(keyword.toLowerCase()) || messageString.endsWith(keyword.toLowerCase())) {
+                    Ping.pingPlayer(clientPlayer, "server");
+                    break;
+                }
+            }
+
+
+            // if a message is a /msg reply from a player
+            if (!fromPlayer && messageString.startsWith("from")) {
+                Ping.pingPlayer(clientPlayer, "reply");
+            }
+
             // If a message contains one of the playerMessages keywords
+
+            // this method was intended for custom/private use that can be changed in settings
+            // to include your own triggers, but this feature has yet to be added (hence the list is empty)
+
             for (String keyword : playerMessages) {
                 if (messageString.contains(keyword.toLowerCase())) {
-                    Ping.pingPlayer(clientPlayer, false);
+                    Ping.pingPlayer(clientPlayer, "client");
                 }
             }
 
             // If a message contains your username, but is not sent by you
-            if (messageString.contains(playerName) && !fromSelf) {
-                Ping.pingPlayer(clientPlayer, false);
+            if (messageString.contains(playerName) && !fromSelf && fromPlayer) {
+                Ping.pingPlayer(clientPlayer, "username");
             }
 
         });
@@ -102,9 +132,12 @@ public class NotifierClient implements ClientModInitializer {
         // Exclusively for messages sent by players, should never contain server messages
         ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
 
+            if (sender == null) return;
+
             // Player and their username
             ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
-            String playerName = clientPlayer.getGameProfile().getName().toString().toLowerCase();
+            if (clientPlayer == null) return;
+            String playerName = clientPlayer.getGameProfile().getName().toLowerCase();
 
             String messageString = message.getString().toLowerCase();
 
@@ -113,15 +146,19 @@ public class NotifierClient implements ClientModInitializer {
 
 
             // If a message contains one of the playerMessages keywords
+
+            // this method was intended for custom/private use that can be changed in settings
+            // to include your own triggers, but this feature has yet to be added (hence the list is empty)
             for (String keyword : playerMessages) {
                 if (messageString.contains(keyword.toLowerCase())) {
-                    Ping.pingPlayer(clientPlayer, false);
+                    Ping.pingPlayer(clientPlayer, "client");
+                    break;
                 }
             }
 
             // If a message contains your username, but is not sent by you
             if (messageString.contains(playerName) && !Objects.equals(playerSender, playerName)) {
-                Ping.pingPlayer(clientPlayer, false);
+                Ping.pingPlayer(clientPlayer, "username");
             }
         });
     }
